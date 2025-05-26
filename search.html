@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Search Results - BrokieFlix</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: #0b0c10;
+      color: white;
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 30px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    h1 {
+      font-size: 2.4rem;
+      margin-bottom: 25px;
+      text-align: center;
+    }
+
+    .results-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 20px;
+      width: 100%;
+      max-width: 1200px;
+    }
+
+    .card {
+      background: #1c1f26;
+      border-radius: 12px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      text-align: center;
+    }
+
+    .card:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 12px rgba(30, 136, 229, 0.5);
+    }
+
+    .poster {
+      width: 100%;
+      height: 240px;
+      object-fit: cover;
+    }
+
+    .info {
+      padding: 12px;
+    }
+
+    .title {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .meta {
+      font-size: 0.9rem;
+      color: #aaa;
+    }
+
+    .rating {
+      color: gold;
+      font-size: 0.9rem;
+      margin-top: 6px;
+      font-weight: bold;
+    }
+
+    @media (max-width: 500px) {
+      h1 {
+        font-size: 1.6rem;
+      }
+
+      .poster {
+        height: 200px;
+      }
+
+      .title {
+        font-size: 0.95rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1 id="heading">Search Results</h1>
+  <div class="results-grid" id="results"></div>
+
+  <script>
+    const apiKey = '71ff6bb5a8e8de46c14f778b39dba9e9';
+    const query = new URLSearchParams(window.location.search).get("query");
+    document.getElementById("heading").textContent = `Results for "${query}"`;
+
+    fetch(`https://api.themoviedb.org/3/search/multi?api_key=${apiKey}&query=${encodeURIComponent(query)}`)
+      .then(res => res.json())
+      .then(data => {
+        const results = data.results
+          .filter(r =>
+            (r.media_type === "movie" || r.media_type === "tv") &&
+            r.poster_path &&
+            (r.title || r.name) &&
+            (r.release_date || r.first_air_date)
+          )
+          .sort((a, b) => {
+            if (b.popularity !== a.popularity) {
+              return b.popularity - a.popularity;
+            }
+            const dateA = new Date(a.release_date || a.first_air_date);
+            const dateB = new Date(b.release_date || b.first_air_date);
+            return dateB - dateA;
+          });
+
+        const container = document.getElementById("results");
+
+        if (results.length === 0) {
+          container.innerHTML = "<p>No results found.</p>";
+          return;
+        }
+
+        results.forEach(r => {
+          const poster = `https://image.tmdb.org/t/p/w300${r.poster_path}`;
+          const card = document.createElement("div");
+          card.className = "card";
+          card.onclick = () => {
+            window.location.href = `info.html?type=${r.media_type}&id=${r.id}`;
+          };
+          card.innerHTML = `
+            <img class="poster" src="${poster}" alt="${r.title || r.name}">
+            <div class="info">
+              <div class="title">${r.title || r.name}</div>
+              <div class="meta">${(r.release_date || r.first_air_date || "N/A").slice(0, 4)}</div>
+              <div class="rating">⭐ ${r.vote_average || "?"}</div>
+            </div>
+          `;
+          container.appendChild(card);
+        });
+      })
+      .catch(err => {
+        console.error(err);
+        document.getElementById("results").innerHTML = "<p>Error loading search results.</p>";
+      });
+  </script>
+</body>
+</html>

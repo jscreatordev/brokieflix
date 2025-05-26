@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BrokieFlix</title>
+  <style>
+    body {
+      background-color: #0b0c10;
+      color: white;
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      position: relative;
+      height: 80vh;
+      overflow: hidden;
+    }
+
+    .hero {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background-size: cover;
+      background-position: center;
+      display: flex;
+      align-items: flex-end;
+      justify-content: flex-start;
+      padding: 40px;
+      box-shadow: inset 0 -200px 200px -100px rgba(0, 0, 0, 0.7);
+    }
+
+    .hero-info {
+      max-width: 600px;
+      background-color: rgba(0, 0, 0, 0.5);
+      padding: 20px;
+      border-radius: 10px;
+    }
+
+    .hero h1 {
+      font-size: 3em;
+      margin: 0 0 10px;
+    }
+
+    .hero p {
+      font-size: 1.1em;
+      color: #ccc;
+      margin-bottom: 15px;
+    }
+
+    .hero button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #1e88e5;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    .search-bar {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      padding: 25px;
+      background-color: #111;
+      flex-wrap: wrap;
+    }
+
+    input[type="text"] {
+      padding: 12px 16px;
+      font-size: 16px;
+      border-radius: 30px;
+      border: 2px solid #1e88e5;
+      background-color: #1a1a1a;
+      color: white;
+      width: 300px;
+      max-width: 90%;
+      outline: none;
+    }
+
+    button.search-btn {
+      padding: 12px 20px;
+      font-size: 16px;
+      background-color: #1e88e5;
+      color: white;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: background 0.2s ease-in-out;
+    }
+
+    button.search-btn:hover {
+      background-color: #1565c0;
+    }
+
+    .section-title {
+      padding: 20px;
+      font-size: 1.5em;
+    }
+
+    .slider-wrapper {
+      position: relative;
+      padding: 0 40px;
+    }
+
+    .slider {
+      display: flex;
+      overflow-x: auto;
+      padding: 0 0 40px;
+      gap: 20px;
+      scroll-snap-type: x mandatory;
+      scroll-behavior: smooth;
+      scrollbar-width: none;
+    }
+
+    .slider::-webkit-scrollbar {
+      display: none;
+    }
+
+    .card {
+      flex: 0 0 auto;
+      width: 200px;
+      background-color: #16181d;
+      border-radius: 10px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.2s;
+      scroll-snap-align: start;
+    }
+
+    .card:hover {
+      transform: scale(1.05);
+    }
+
+    .card img {
+      width: 100%;
+      display: block;
+    }
+
+    .card-title {
+      padding: 8px;
+      font-size: 1em;
+      text-align: center;
+      min-height: 60px;
+    }
+
+    .slider-arrow {
+      position: absolute;
+      top: 40%;
+      transform: translateY(-50%);
+      background: #1e88e5;
+      border: none;
+      color: white;
+      font-size: 1.5rem;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      cursor: pointer;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .slider-arrow.left {
+      left: -10px;
+    }
+
+    .slider-arrow.right {
+      right: -10px;
+    }
+
+    @media (max-width: 600px) {
+      .hero h1 {
+        font-size: 2em;
+      }
+
+      .hero p {
+        font-size: 0.9em;
+      }
+
+      .slider-wrapper {
+        padding: 0 10px;
+      }
+
+      .card {
+        width: 140px;
+      }
+
+      .card-title {
+        font-size: 0.9em;
+        min-height: 40px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="hero" id="hero">
+      <div class="hero-info">
+        <h1 id="hero-title">BrokieFlix</h1>
+        <p id="hero-desc">Loading description...</p>
+        <button id="hero-btn">▶ Watch Now</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="search-bar">
+    <input type="text" id="searchInput" placeholder="Search for a Movie or TV Show...">
+    <button class="search-btn" onclick="searchTMDB()">Search</button>
+  </div>
+  <center>
+    <p> 🔴 USE uBLOCK BEFORE WATCHING 🔴</p>
+  </center>
+  <div class="section-title">Top Movies</div>
+  <div class="slider-wrapper">
+    <button class="slider-arrow left" onclick="scrollSlider('moviesContainer', -1)">&#10094;</button>
+    <div class="slider" id="moviesContainer"></div>
+    <button class="slider-arrow right" onclick="scrollSlider('moviesContainer', 1)">&#10095;</button>
+  </div>
+
+  <div class="section-title">Top TV Shows</div>
+  <div class="slider-wrapper">
+    <button class="slider-arrow left" onclick="scrollSlider('tvContainer', -1)">&#10094;</button>
+    <div class="slider" id="tvContainer"></div>
+    <button class="slider-arrow right" onclick="scrollSlider('tvContainer', 1)">&#10095;</button>
+  </div>
+
+  <script>
+    const apiKey = '71ff6bb5a8e8de46c14f778b39dba9e9';
+    let heroIndex = 0;
+    let heroItems = [];
+    const usedIds = new Set();
+
+    function scrollSlider(containerId, direction) {
+      const container = document.getElementById(containerId);
+      const scrollAmount = 220 * direction;
+      container.scrollBy({left: scrollAmount, behavior: 'smooth'});
+    }
+
+    async function fetchCategory(endpoint, containerId, typeOverride, isHero = false) {
+      const res = await fetch(endpoint);
+      const data = await res.json();
+      const container = document.getElementById(containerId);
+
+      data.results.forEach(item => {
+        const type = typeOverride || (item.title ? 'movie' : 'tv');
+        const name = item.title || item.name;
+        const id = item.id;
+        if (usedIds.has(id) || !item.poster_path || !item.backdrop_path) return;
+        usedIds.add(id);
+        const poster = `https://image.tmdb.org/t/p/w500${item.poster_path}`;
+
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.onclick = () => window.location.href = `info.html?type=${type}&id=${id}`;
+        card.innerHTML = `<img src="${poster}" alt="${name}" /><div class="card-title">${name}</div>`;
+        container.appendChild(card);
+
+        if (isHero && heroItems.length < 10) {
+          heroItems.push({
+            id,
+            type,
+            name,
+            desc: item.overview,
+            backdrop: `https://image.tmdb.org/t/p/original${item.backdrop_path}`
+          });
+        }
+      });
+    }
+
+    function rotateHero() {
+      if (heroItems.length === 0) return;
+      const item = heroItems[heroIndex];
+      document.getElementById('hero').style.backgroundImage = `url('${item.backdrop}')`;
+      document.getElementById('hero-title').textContent = item.name;
+      document.getElementById('hero-desc').textContent = item.desc || 'No description available.';
+      document.getElementById('hero-btn').onclick = () =>
+        window.location.href = `player.html?type=${item.type}&id=${item.id}`;
+      heroIndex = (heroIndex + 1) % heroItems.length;
+      setTimeout(rotateHero, 5000);
+    }
+    function searchTMDB() {
+      const query = document.getElementById('searchInput').value.trim();
+      if (!query) return alert('Please enter a search term.');
+      window.location.href = `search.html?query=${encodeURIComponent(query)}`;
+    }
+
+
+    fetchCategory(`https://api.themoviedb.org/3/movie/now_playing?api_key=${apiKey}`, 'moviesContainer', 'movie', true);
+    fetchCategory(`https://api.themoviedb.org/3/tv/top_rated?api_key=${apiKey}`, 'tvContainer', 'tv');
+    setTimeout(rotateHero, 1000);
+  </script>
+</body>
+
+</html>

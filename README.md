@@ -4,7 +4,8 @@
 ![image](https://github.com/user-attachments/assets/1845d6f5-11df-49a6-a96b-5592d671fe42)
 
 public website will never be posted due to potential copyright infringement. 
-features >>>>>>
+
+> features can be found >>> [here](https://github.com/jscreatordev/brokieflix/blob/main/features.md)
 
 
 ### NOTICES:

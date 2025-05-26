@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BrokieFlix</title>
+  <style>
+    body {
+      margin: 0;
+      background-color: #0b0c10;
+      color: white;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: auto;
+      padding: 40px 5vw;
+    }
+
+    .header {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 30px;
+      align-items: flex-start;
+    }
+
+    .poster {
+      width: 260px;
+      max-width: 100%;
+      border-radius: 12px;
+      box-shadow: 0 0 25px rgba(0, 0, 0, 0.6);
+    }
+
+    .details {
+      flex: 1;
+      min-width: 300px;
+    }
+
+    .title {
+      font-size: 2.2em;
+      font-weight: bold;
+    }
+
+    .tagline {
+      font-style: italic;
+      color: #ccc;
+      margin: 10px 0;
+    }
+
+    .meta {
+      font-size: 1em;
+      color: #bbb;
+      margin-bottom: 20px;
+    }
+
+    .overview {
+      margin-top: 20px;
+      font-size: 1.05em;
+      line-height: 1.6;
+      max-width: 900px;
+    }
+
+    .season-buttons {
+      margin: 20px 0;
+    }
+
+    .season-buttons button {
+      margin: 5px;
+      padding: 8px 16px;
+      border: none;
+      background-color: #333;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .season-buttons button.active {
+      background-color: #1e88e5;
+    }
+
+    .episode {
+      background: #16181d;
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .ep-thumb {
+      flex: 0 0 200px;
+      border-radius: 10px;
+      object-fit: cover;
+      max-width: 100%;
+    }
+
+    .ep-details {
+      flex: 1;
+      min-width: 250px;
+    }
+
+    .ep-title {
+      font-size: 1.3em;
+      font-weight: bold;
+    }
+
+    .ep-meta {
+      font-size: 0.95em;
+      color: #aaa;
+      margin: 5px 0;
+    }
+
+    .ep-overview {
+      font-size: 1em;
+      margin-bottom: 5px;
+    }
+
+    .ep-play {
+      background: #007bff;
+      color: white;
+      padding: 8px 16px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="header">
+      <img id="poster" class="poster" src="" alt="Poster" />
+      <div class="details">
+        <div class="title" id="title">Loading...</div>
+        <div class="tagline" id="tagline"></div>
+        <div class="meta" id="meta"></div>
+        <div class="overview" id="overview"></div>
+      </div>
+    </div>
+
+    <div id="episodes-section">
+      <h2>Episodes</h2>
+      <div class="season-buttons" id="season-buttons"></div>
+      <div id="episodes"></div>
+    </div>
+  </div>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get('id');
+    const type = params.get('type');
+    const apiKey = '71ff6bb5a8e8de46c14f778b39dba9e9';
+
+    if (!id || !type) {
+      document.body.innerHTML = '<p>Missing parameters.</p>';
+    } else if (type === 'movie') {
+      window.location.href = `episode.html?tmbid=${id}&type=movie`;
+    } else {
+      loadTVDetails();
+    }
+
+    async function loadTVDetails() {
+      const res = await fetch(`https://api.themoviedb.org/3/tv/${id}?api_key=${apiKey}`);
+      const data = await res.json();
+
+      document.getElementById('title').textContent = data.name;
+      document.getElementById('tagline').textContent = data.tagline || '';
+      document.getElementById('meta').textContent = `${data.first_air_date || 'N/A'} • ⭐ ${data.vote_average || '?'} • ${data.genres.map(g => g.name).join(', ')}`;
+      document.getElementById('overview').textContent = data.overview || 'No description';
+      document.getElementById('poster').src = `https://image.tmdb.org/t/p/w500${data.poster_path}`;
+
+      const buttons = document.getElementById('season-buttons');
+      let firstValidSeason = null;
+
+      data.seasons.forEach(season => {
+        if (season.season_number === 0) return;
+        const btn = document.createElement('button');
+        btn.textContent = `Season ${season.season_number}`;
+        btn.onclick = () => {
+          document.querySelectorAll('.season-buttons button').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          loadEpisodes(season.season_number);
+        };
+        if (!firstValidSeason) {
+          btn.classList.add('active');
+          firstValidSeason = season.season_number;
+        }
+        buttons.appendChild(btn);
+      });
+
+      if (firstValidSeason !== null) loadEpisodes(firstValidSeason);
+    }
+
+    async function loadEpisodes(seasonNumber) {
+      const container = document.getElementById('episodes');
+      container.innerHTML = 'Loading...';
+
+      const res = await fetch(`https://api.themoviedb.org/3/tv/${id}/season/${seasonNumber}?api_key=${apiKey}`);
+      const season = await res.json();
+
+      container.innerHTML = '';
+      season.episodes.forEach(ep => {
+        const div = document.createElement('div');
+        div.className = 'episode';
+        div.innerHTML = `
+          <img class="ep-thumb" src="https://image.tmdb.org/t/p/w500${ep.still_path}" onerror="this.style.display='none'">
+          <div class="ep-details">
+            <div class="ep-title">${ep.episode_number}. ${ep.name}</div>
+            <div class="ep-meta">${ep.air_date || 'N/A'} • ⭐ ${ep.vote_average || 'N/A'}</div>
+            <div class="ep-overview">${ep.overview || 'No summary available.'}</div>
+            <button class="ep-play" onclick="location.href='episode.html?tmbid=${id}&season=${seasonNumber}&episode=${ep.episode_number}&type=tv'">▶ Play</button>
+          </div>
+        `;
+        container.appendChild(div);
+      });
+    }
+  </script>
+</body>
+
+</html>

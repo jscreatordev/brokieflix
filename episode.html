@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Now Playing - BrokieFlix</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background-color: #0b0c10;
+      color: white;
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      min-height: 100vh;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1000px;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 30px;
+    }
+
+    #player iframe {
+      width: 100%;
+      height: 500px;
+      border: none;
+      border-radius: 16px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
+      margin-bottom: 25px;
+      transition: all 0.3s ease-in-out;
+    }
+
+    .button-group {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    button,
+    a,
+    select {
+      background: #1e88e5;
+      color: white;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 8px;
+      text-decoration: none;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background-color 0.25s ease;
+    }
+
+    button:hover,
+    a:hover {
+      background-color: #1565c0;
+    }
+
+    select {
+      appearance: none;
+      -webkit-appearance: none;
+      background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg fill='white' viewBox='0 0 24 24' width='24' height='24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      padding-right: 40px;
+    }
+
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 2rem;
+      }
+
+      #player iframe {
+        height: 300px;
+      }
+
+      button,
+      a,
+      select {
+        padding: 10px 16px;
+        font-size: 0.95rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 1.6rem;
+      }
+
+      #player iframe {
+        height: 220px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1 id="title">Now Playing</h1>
+
+    <div class="button-group">
+      <button onclick="history.back()">⬅ Back</button>
+      <select id="sourceSelector" onchange="changeSource(this.value)">
+        <option value="vidlink">VidLink</option>
+        <option value="embedsu">EmbedSU</option>
+        <option value="vidjoy">VidJoy</option>
+        <option value="2embed">2Embed</option>
+      </select>
+
+      <button id="next-ep" style="display: none;" onclick="goToNextEpisode()">▶ Next Episode</button>
+      <a href="index.html">🏠 Home</a>
+    </div>
+
+    <div id="player"></div>
+  </div>
+
+  <script>
+    const q = new URLSearchParams(window.location.search);
+    const id = q.get('tmbid');
+    const type = q.get('type');
+    let season = parseInt(q.get('season'));
+    let episode = parseInt(q.get('episode'));
+    let currentSource = 'vidlink';
+
+    function getEmbedUrl(source) {
+      if (!id || !type) return null;
+
+      if (type === 'movie') {
+        switch (source) {
+          case 'vidlink':
+            return `https://vidlink.pro/movie/${id}`;
+          case 'embedsu':
+            return `https://embed.su/embed/movie/${id}`;
+          case 'vidjoy':
+            return `https://vidjoy.pro/embed/movie/${id}`;
+          case '2embed':
+            return `https://www.2embed.cc/embed/${id}`;
+        }
+      } else if (type === 'tv') {
+        if (!season || !episode) return null;
+
+        switch (source) {
+          case 'vidlink':
+            return `https://vidlink.pro/tv/${id}/${season}/${episode}`;
+          case 'embedsu':
+            return `https://embed.su/embed/tv/${id}/${season}/${episode}`;
+          case 'vidjoy':
+            return `https://vidjoy.pro/embed/tv/${season}/${id}`;
+          case '2embed':
+            return `https://www.2embed.cc/embedtv/${id}&s=${season}&e=${episode}`;
+        }
+      }
+
+      return null;
+    }
+
+    function loadPlayer() {
+      const embedUrl = getEmbedUrl(currentSource);
+      if (!embedUrl) {
+        document.getElementById('player').innerHTML = 'Missing or incorrect parameters.';
+        return;
+      }
+
+      document.getElementById('player').innerHTML = `
+        <iframe src="${embedUrl}" allowfullscreen></iframe>
+      `;
+
+      if (type === 'tv') {
+        document.getElementById('next-ep').style.display = 'inline-block';
+      }
+    }
+
+    function changeSource(newSource) {
+      currentSource = newSource;
+      loadPlayer();
+    }
+
+    function goToNextEpisode() {
+      const nextEp = episode + 1;
+      const url = new URL(window.location.href);
+      url.searchParams.set('episode', nextEp);
+      window.location.href = url.toString();
+    }
+
+    loadPlayer();
+  </script>
+
+</body>
+
+</html>

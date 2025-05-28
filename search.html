@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -92,7 +93,21 @@
     }
   </style>
 </head>
+
 <body>
+  <div style="position: absolute; top: 20px; left: 20px; z-index: 2;">
+    <button onclick="history.back()" style="
+      background: #1e88e5;
+      color: white;
+      padding: 10px 18px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    ">⬅ Back</button>
+  </div>
+
   <h1 id="heading">Search Results</h1>
   <div class="results-grid" id="results"></div>
 
@@ -151,4 +166,5 @@
       });
   </script>
 </body>
+
 </html>

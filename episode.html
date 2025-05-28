@@ -106,23 +106,45 @@
         height: 220px;
       }
     }
+
+    .back-btn {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      z-index: 2;
+    }
+
+    .back-btn button {
+      background: #1e88e5;
+      color: white;
+      padding: 10px 18px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
   </style>
 </head>
 
 <body>
   <div class="container">
     <h1 id="title">Now Playing</h1>
+    <div class="back-btn">
+      <button onclick="history.back()">⬅ Back</button>
+    </div>
 
     <div class="button-group">
-      <button onclick="history.back()">⬅ Back</button>
       <select id="sourceSelector" onchange="changeSource(this.value)">
         <option value="vidlink">VidLink</option>
         <option value="embedsu">EmbedSU</option>
         <option value="vidjoy">VidJoy</option>
         <option value="2embed">2Embed</option>
+        <option value="vidzee">VidZee</option>
       </select>
 
       <button id="next-ep" style="display: none;" onclick="goToNextEpisode()">▶ Next Episode</button>
+      <a id="downloadBtn" style="display: none;" target="_blank">⬇ Download</a>
       <a href="index.html">🏠 Home</a>
     </div>
 
@@ -136,52 +158,92 @@
     let season = parseInt(q.get('season'));
     let episode = parseInt(q.get('episode'));
     let currentSource = 'vidlink';
+    const apiKey = '71ff6bb5a8e8de46c14f778b39dba9e9'; // your TMDb API key
 
     function getEmbedUrl(source) {
       if (!id || !type) return null;
 
       if (type === 'movie') {
         switch (source) {
-          case 'vidlink':
-            return `https://vidlink.pro/movie/${id}`;
-          case 'embedsu':
-            return `https://embed.su/embed/movie/${id}`;
-          case 'vidjoy':
-            return `https://vidjoy.pro/embed/movie/${id}`;
-          case '2embed':
-            return `https://www.2embed.cc/embed/${id}`;
+          case 'vidlink': return `https://vidlink.pro/movie/${id}`;
+          case 'embedsu': return `https://embed.su/embed/movie/${id}`;
+          case 'vidjoy': return `https://vidjoy.pro/embed/movie/${id}`;
+          case '2embed': return `https://www.2embed.cc/embed/${id}`;
+          case 'vidzee': return `https://player.vidzee.wtf/embed/movie/${id}`;
         }
       } else if (type === 'tv') {
         if (!season || !episode) return null;
-
         switch (source) {
-          case 'vidlink':
-            return `https://vidlink.pro/tv/${id}/${season}/${episode}`;
-          case 'embedsu':
-            return `https://embed.su/embed/tv/${id}/${season}/${episode}`;
-          case 'vidjoy':
-            return `https://vidjoy.pro/embed/tv/${season}/${id}`;
-          case '2embed':
-            return `https://www.2embed.cc/embedtv/${id}&s=${season}&e=${episode}`;
+          case 'vidlink': return `https://vidlink.pro/tv/${id}/${season}/${episode}`;
+          case 'embedsu': return `https://embed.su/embed/tv/${id}/${season}/${episode}`;
+          case 'vidjoy': return `https://vidjoy.pro/embed/tv/${season}/${id}`;
+          case '2embed': return `https://www.2embed.cc/embedtv/${id}&s=${season}&e=${episode}`;
+          case 'vidzee': return `https://player.vidzee.wtf/embed/tv/${season}/${id}`;
         }
       }
 
       return null;
     }
 
-    function loadPlayer() {
+    async function setDownloadButton() {
+      const btn = document.getElementById('downloadBtn');
+      let url = "";
+
+      if (type === 'movie') {
+        url = `https://dl.vidzee.wtf/download/movie/v1/${id}`;
+      } else if (type === 'tv' && season && episode) {
+        url = `https://dl.vidzee.wtf/download/tv/v1/${id}/${season}/${episode}`;
+      } else {
+        btn.style.display = 'none';
+        return;
+      }
+
+      try {
+        const res = await fetch(url);
+        const data = await res.json();
+        if (data.downloadLink) {
+          btn.href = data.downloadLink;
+          btn.style.display = 'inline-block';
+        } else {
+          btn.style.display = 'none';
+        }
+      } catch (err) {
+        console.error('Download fetch failed:', err);
+        btn.style.display = 'none';
+      }
+    }
+
+    async function loadPlayer() {
       const embedUrl = getEmbedUrl(currentSource);
       if (!embedUrl) {
         document.getElementById('player').innerHTML = 'Missing or incorrect parameters.';
         return;
       }
 
-      document.getElementById('player').innerHTML = `
-        <iframe src="${embedUrl}" allowfullscreen></iframe>
-      `;
-
+      document.getElementById('player').innerHTML = `<iframe src="${embedUrl}" allowfullscreen></iframe>`;
       if (type === 'tv') {
         document.getElementById('next-ep').style.display = 'inline-block';
+      }
+
+      setDownloadButton();
+
+      // ✅ GET ACTUAL TITLE FROM TMDb API and save to localStorage
+      try {
+        const res = await fetch(`https://api.themoviedb.org/3/${type}/${id}?api_key=${apiKey}`);
+        const data = await res.json();
+        const realTitle = data.title || data.name || 'Unknown Title';
+        const info = {
+          id,
+          type,
+          season,
+          episode,
+          title: realTitle,
+          timestamp: Date.now()
+        };
+        localStorage.setItem(`continue-${id}`, JSON.stringify(info));
+        console.log("Saved to localStorage:", info);
+      } catch (err) {
+        console.error("Failed to fetch title:", err);
       }
     }
 

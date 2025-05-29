@@ -3,7 +3,7 @@
 
 ![image](https://github.com/user-attachments/assets/1845d6f5-11df-49a6-a96b-5592d671fe42)
 
-[website version](https://jscreatordev.github.io/brokieflix/index.html)
+due to legal reasons, public demo won't be out ever. 
 
 > features can be found >>> [here](https://github.com/jscreatordev/brokieflix/blob/main/features.md)
 

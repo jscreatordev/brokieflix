@@ -7,14 +7,6 @@ due to legal reasons, public demo won't be out ever.
 
 > features can be found >>> [here](https://github.com/jscreatordev/brokieflix/blob/main/features.md)
 
-
-### NOTICES:
-APP DOES NOT REQUIRE UBLOCK 🥳 - was notice for old web version. 
-
-Releases can be found at [here](https://github.com/jscreatordev/brokieflix/releases)
-  - based off of [electron](https://github.com/electron/electron)
-
-
 ## FAQ
 ### How does this work?
 > Using the TMBD database for the metadata, and other sources for the embeded content.

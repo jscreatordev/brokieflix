@@ -1,92 +1,173 @@
-
-
 <!DOCTYPE html>
-
 <html lang="en">
+
 <head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>BrokieFlix</title>
-<style>
-    body { background-color: #0b0c10; color: white; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 0; }
-    header { position: relative; height: 80vh; overflow: hidden; }
-    .hero { position: absolute; width: 100%; height: 100%; background-size: cover; background-position: center; display: flex; align-items: flex-end; justify-content: flex-start; padding: 40px; box-shadow: inset 0 -200px 200px -100px rgba(0, 0, 0, 0.7); }
-    .hero-info { max-width: 600px; background-color: rgba(0, 0, 0, 0.5); padding: 20px; border-radius: 10px; }
-    .hero h1 { font-size: 3em; margin: 0 0 10px; }
-    .hero p { font-size: 1.1em; color: #ccc; margin-bottom: 15px; }
-    .hero button { padding: 10px 20px; font-size: 16px; background-color: #1e88e5; color: white; border: none; border-radius: 6px; cursor: pointer; margin-top: 10px; }
-    .search-bar { display: flex; justify-content: center; align-items: center; gap: 10px; padding: 25px; background-color: #111; flex-wrap: wrap; }
-    input[type="text"] { padding: 12px 16px; font-size: 16px; border-radius: 30px; border: 2px solid #1e88e5; background-color: #1a1a1a; color: white; width: 300px; max-width: 90%; outline: none; }
-    button.search-btn { padding: 12px 20px; font-size: 16px; background-color: #1e88e5; color: white; border: none; border-radius: 30px; cursor: pointer; transition: background 0.2s ease-in-out; }
-    button.search-btn:hover { background-color: #1565c0; }
-    .section-title { padding: 20px; font-size: 1.5em; }
-    .slider-wrapper { position: relative; padding: 0 40px; }
-    .slider { display: flex; overflow-x: auto; padding: 0 0 40px; gap: 20px; scroll-snap-type: x mandatory; scroll-behavior: smooth; scrollbar-width: none; }
-    .slider::-webkit-scrollbar { display: none; }
-    .card { flex: 0 0 auto; width: 200px; background-color: #16181d; border-radius: 10px; overflow: hidden; cursor: pointer; transition: transform 0.2s; scroll-snap-align: start; }
-    .card:hover { transform: scale(1.05); }
-    .card img { width: 100%; display: block; }
-    .card-title { padding: 8px; font-size: 1em; text-align: center; min-height: 60px; }
-    .slider-arrow { position: absolute; top: 40%; transform: translateY(-50%); background: #1e88e5; border: none; color: white; font-size: 1.5rem; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; z-index: 10; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3); }
-    .slider-arrow.left { left: -10px; }
-    .slider-arrow.right { right: -10px; }
-    .continue-card { height: 300px; background: #333; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; padding: 20px; text-align: center; color: white; }
-    @media (max-width: 600px) {
-      .hero h1 { font-size: 2em; }
-      .hero p { font-size: 0.9em; }
-      .slider-wrapper { padding: 0 10px; }
-      .card { width: 140px; }
-      .card-title { font-size: 0.9em; min-height: 40px; }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BrokieFlix</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #141414;
+      color: #fff;
+      overflow: hidden;
+    }
+    header {
+      height: 80vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 20px;
+      background-size: cover;
+      background-position: center;
+      position: relative;
+    }
+    header::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(20,20,20,1), rgba(20,20,20,0.3));
+      z-index: 0;
+    }
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: relative;
+      z-index: 1;
+    }
+    .logo {
+      font-size: 2rem;
+      font-weight: 900;
+      color: #e50914;
+    }
+    .nav-links a {
+      margin-left: 20px;
+      color: #fff;
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .hero-text {
+      max-width: 600px;
+      position: relative;
+      z-index: 1;
+    }
+    .hero-text h1 {
+      font-size: 3rem;
+      margin-bottom: 0.5rem;
+    }
+    .hero-text p {
+      color: #ccc;
+      font-size: 1.2rem;
+    }
+    .hero-text button {
+      margin-top: 10px;
+      padding: 10px 20px;
+      font-size: 1rem;
+      background-color: #e50914;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    section {
+      padding: 20px;
+    }
+    h2 {
+      margin-bottom: 10px;
+      font-size: 1.5rem;
+    }
+    .carousel {
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    .carousel::-webkit-scrollbar {
+      display: none;
+    }
+    .card {
+      min-width: 200px;
+      height: 300px;
+      background-color: #333;
+      border-radius: 8px;
+      overflow: hidden;
+      flex-shrink: 0;
+      scroll-snap-align: start;
+      position: relative;
+    }
+    .card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .card-title {
+      position: absolute;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.6);
+      width: 100%;
+      text-align: center;
+      padding: 5px 0;
+      font-weight: bold;
+    }
+    .continue-card {
+      background-color: #222;
+      height: 100%;
+      padding: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
     }
   </style>
 </head>
+
 <body>
-<header>
-<div class="hero" id="hero">
-<div class="hero-info">
-<h1 id="hero-title">BrokieFlix</h1>
-<p id="hero-desc">Loading description...</p>
-<button id="hero-btn">▶ Watch Now</button>
-</div>
-</div>
-</header>
-<div class="search-bar">
-<input id="searchInput" placeholder="Search for a Movie or TV Show..." type="text"/>
-<button class="search-btn" onclick="searchTMDB()">Search</button>
-</div>
-<center><p> 🔴 USE uBLOCK BEFORE WATCHING 🔴</p></center>
+  <header id="hero">
+    <nav>
+      <div class="logo">BrokieFlix</div>
+      <div class="nav-links">
+        <a href="#">Home</a>
+        <a href="#">TV Shows</a>
+        <a href="#">Movies</a>
+        <a href="#">My List</a>
+      </div>
+    </nav>
+    <div class="hero-text">
+      <h1 id="hero-title">Loading...</h1>
+      <p id="hero-desc">Please wait while we fetch the latest releases.</p>
+      <button id="hero-btn">Watch Now</button>
+    </div>
+  </header>
 
+  <section>
+    <h2>Trending Now</h2>
+    <div class="carousel" id="moviesContainer"></div>
+  </section>
 
+  <section>
+    <h2>Top Rated TV</h2>
+    <div class="carousel" id="tvContainer"></div>
+  </section>
 
-<div class="section-title">Continue Watching</div>
-<div class="slider-wrapper">
-<button class="slider-arrow left" onclick="scrollSlider('continueContainer', -1)">❮</button>
-<div class="slider" id="continueContainer"></div>
-<button class="slider-arrow right" onclick="scrollSlider('continueContainer', 1)">❯</button>
-</div>
-<div class="section-title">Top Movies</div>
-<div class="slider-wrapper">
-<button class="slider-arrow left" onclick="scrollSlider('moviesContainer', -1)">❮</button>
-<div class="slider" id="moviesContainer"></div>
-<button class="slider-arrow right" onclick="scrollSlider('moviesContainer', 1)">❯</button>
-</div>
-<div class="section-title">Top TV Shows</div>
-<div class="slider-wrapper">
-<button class="slider-arrow left" onclick="scrollSlider('tvContainer', -1)">❮</button>
-<div class="slider" id="tvContainer"></div>
-<button class="slider-arrow right" onclick="scrollSlider('tvContainer', 1)">❯</button>
-</div>
-<script>
+  <section>
+    <h2>Continue Watching</h2>
+    <div class="carousel" id="continueContainer"></div>
+  </section>
+
+  <script>
     const apiKey = '71ff6bb5a8e8de46c14f778b39dba9e9';
     let heroIndex = 0;
     let heroItems = [];
     const usedIds = new Set();
-
-    function scrollSlider(containerId, direction) {
-      const container = document.getElementById(containerId);
-      const scrollAmount = 220 * direction;
-      container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
-    }
 
     async function fetchCategory(endpoint, containerId, typeOverride, isHero = false) {
       const res = await fetch(endpoint);
@@ -120,12 +201,6 @@
       document.getElementById('hero-btn').onclick = () => window.location.href = `player.html?type=${item.type}&id=${item.id}`;
       heroIndex = (heroIndex + 1) % heroItems.length;
       setTimeout(rotateHero, 5000);
-    }
-
-    function searchTMDB() {
-      const query = document.getElementById('searchInput').value.trim();
-      if (!query) return alert('Please enter a search term.');
-      window.location.href = `search.html?query=${encodeURIComponent(query)}`;
     }
 
     function loadContinueWatching() {
@@ -167,86 +242,5 @@
     setTimeout(rotateHero, 1000);
     loadContinueWatching();
   </script>
-
-<style>
-  .continue-card {
-    position: relative;
-    width: 200px;
-    height: 120px;
-    border-radius: 10px;
-    overflow: hidden;
-    background-size: cover;
-    background-position: center;
-  }
-
-  .continue-card::after {
-    content: "";
-    display: block;
-    height: 4px;
-    width: 80%;
-    position: absolute;
-    bottom: 0;
-    left: 10%;
-    background: red;
-    border-radius: 4px;
-  }
-
-  .continue-card-title {
-    position: absolute;
-    bottom: 10px;
-    left: 10px;
-    right: 10px;
-    background: rgba(0,0,0,0.6);
-    padding: 5px;
-    font-size: 0.95em;
-    text-align: center;
-    border-radius: 5px;
-  }
-</style>
-<script>
-  function loadContinueWatching() {
-    const container = document.getElementById("continueContainer");
-    const items = [];
-
-    for (let key in localStorage) {
-      if (key.startsWith("continue-")) {
-        try {
-          const entry = JSON.parse(localStorage.getItem(key));
-          if (entry?.id && entry?.title) {
-            items.push(entry);
-          }
-        } catch {}
-      }
-    }
-
-    items.sort((a, b) => b.timestamp - a.timestamp);
-    container.innerHTML = "";
-
-    items.forEach(entry => {
-      const div = document.createElement("div");
-      div.className = "card";
-      const img = entry.poster || entry.backdrop ? `https://image.tmdb.org/t/p/w500${entry.poster || entry.backdrop}` : "";
-      const subtitle = entry.season && entry.episode ? `S${entry.season} • E${entry.episode}` : "";
-
-      div.innerHTML = `
-        <div class="continue-card" style="background-image: url('${img}')">
-          <div class="continue-card-title">${entry.title} ${subtitle}</div>
-        </div>
-      `;
-
-      div.onclick = () => {
-        const link = entry.type === "movie"
-          ? `player.html?id=${entry.id}&type=movie`
-          : `episode.html?tmbid=${entry.id}&type=tv&season=${entry.season}&episode=${entry.episode}`;
-        window.location.href = link;
-      };
-
-      container.appendChild(div);
-    });
-  }
-
-  window.addEventListener("DOMContentLoaded", loadContinueWatching);
-</script>
-
 </body>
 </html>

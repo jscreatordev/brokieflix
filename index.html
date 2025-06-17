@@ -60,11 +60,13 @@
     }
     .nav-links input {
       margin-left: 20px;
-      padding: 6px 12px;
-      border-radius: 4px;
+      padding: 8px 16px;
+      border-radius: 30px;
       border: none;
       outline: none;
       font-size: 1rem;
+      background-color: #333;
+      color: white;
     }
     .hero-text {
       max-width: 600px;
@@ -96,6 +98,9 @@
       margin-bottom: 10px;
       font-size: 1.5rem;
     }
+    .carousel-wrapper {
+      position: relative;
+    }
     .carousel {
       display: flex;
       gap: 10px;
@@ -106,6 +111,23 @@
     }
     .carousel::-webkit-scrollbar {
       display: none;
+    }
+    .scroll-arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(0, 0, 0, 0.6);
+      border: none;
+      color: white;
+      font-size: 2rem;
+      cursor: pointer;
+      z-index: 2;
+    }
+    .scroll-left {
+      left: 0;
+    }
+    .scroll-right {
+      right: 0;
     }
     .card {
       min-width: 200px;
@@ -164,12 +186,20 @@
 
   <section>
     <h2>Trending Now</h2>
-    <div class="carousel" id="moviesContainer"></div>
+    <div class="carousel-wrapper">
+      <button class="scroll-arrow scroll-left" onclick="scrollSlider('moviesContainer', -1)">&#10094;</button>
+      <div class="carousel" id="moviesContainer"></div>
+      <button class="scroll-arrow scroll-right" onclick="scrollSlider('moviesContainer', 1)">&#10095;</button>
+    </div>
   </section>
 
   <section>
     <h2>Top Rated TV</h2>
-    <div class="carousel" id="tvContainer"></div>
+    <div class="carousel-wrapper">
+      <button class="scroll-arrow scroll-left" onclick="scrollSlider('tvContainer', -1)">&#10094;</button>
+      <div class="carousel" id="tvContainer"></div>
+      <button class="scroll-arrow scroll-right" onclick="scrollSlider('tvContainer', 1)">&#10095;</button>
+    </div>
   </section>
 
   <section>
@@ -204,6 +234,12 @@
           heroItems.push({ id, type, name, desc: item.overview, backdrop: `https://image.tmdb.org/t/p/original${item.backdrop_path}` });
         }
       });
+    }
+
+    function scrollSlider(containerId, direction) {
+      const container = document.getElementById(containerId);
+      const scrollAmount = 220 * direction;
+      container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
     }
 
     function rotateHero() {
@@ -253,11 +289,12 @@
     }
 
     function filterCategory(type) {
-      const endpoint = type === 'movie'
-        ? `https://api.themoviedb.org/3/movie/popular?api_key=${apiKey}`
-        : `https://api.themoviedb.org/3/tv/popular?api_key=${apiKey}`;
-      const containerId = type === 'movie' ? 'moviesContainer' : 'tvContainer';
-      fetchCategory(endpoint, containerId, type, false, true);
+      usedIds.clear();
+      for (let page = 1; page <= 5; page++) {
+        const endpoint = `https://api.themoviedb.org/3/${type}/popular?api_key=${apiKey}&page=${page}`;
+        const containerId = type === 'movie' ? 'moviesContainer' : 'tvContainer';
+        fetchCategory(endpoint, containerId, type, false, page === 1);
+      }
     }
 
     function searchTMDB() {

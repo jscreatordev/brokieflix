@@ -1,25 +1,21 @@
-# Brokieflix
-> Be Free <3
+# BrokieFlix  
+> Be Free <3 Watch your favorite movies free. 
 
-![image](https://github.com/user-attachments/assets/1845d6f5-11df-49a6-a96b-5592d671fe42)
+![BrokieFlix](https://github.com/user-attachments/assets/1845d6f5-11df-49a6-a96b-5592d671fe42)
 
-due to legal reasons, public demo won't be out ever. 
+> **Note:** Due to legal reasons, no public demo will be available.
 
-> features can be found >>> [here](https://github.com/jscreatordev/brokieflix/blob/main/features.md)
+### ✨ Features  
+See full list [here](https://github.com/jscreatordev/brokieflix/blob/main/features.md)
 
-## FAQ
-### How does this work?
-> Using the TMBD database for the metadata, and other sources for the embeded content.
-> embeds content from multiple sources for media
-### Is is safe to use?
-> As usual, use at your own risk. More likley risk to be found in first world countries, but generally you should be fine. Use VPN if your really catious. 
+### ❓ FAQ  
+**How does it work?**  
+Uses TMDB for metadata and embeds content from various sources.
 
+**Is it safe?**  
+Use at your own risk. VPN recommended, especially in stricter regions.
 
+---
 
-Credits:
-@jscreatordev
-@electron
-TMBD
-
-
-
+**Credits:**  
+[@jscreatordev](https://github.com/jscreatordev) • Electron • TMDB

@@ -1,7 +1,10 @@
+@@ -1,312 +1,324 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>BrokieFlix</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
@@ -115,6 +118,10 @@
       position: absolute;
       top: 50%;
       transform: translateY(-50%);
+      background: rgba(0, 0, 0, 0.6);
+      border: none;
+      color: white;
+      font-size: 2rem;
       background: rgba(255, 255, 255, 0.1);
       border: 2px solid #fff;
       color: #fff;
@@ -236,14 +243,14 @@
         const id = item.id;
         if (usedIds.has(id) || !item.poster_path || !item.backdrop_path) return;
         usedIds.add(id);
-        const poster = https://image.tmdb.org/t/p/w500${item.poster_path};
+        const poster = `https://image.tmdb.org/t/p/w500${item.poster_path}`;
         const card = document.createElement('div');
         card.className = 'card';
-        card.onclick = () => window.location.href = info.html?type=${type}&id=${id};
-        card.innerHTML = <img src="${poster}" alt="${name}" /><div class="card-title">${name}</div>;
+        card.onclick = () => window.location.href = `info.html?type=${type}&id=${id}`;
+        card.innerHTML = `<img src="${poster}" alt="${name}" /><div class="card-title">${name}</div>`;
         container.appendChild(card);
         if (isHero && heroItems.length < 10) {
-          heroItems.push({ id, type, name, desc: item.overview, backdrop: https://image.tmdb.org/t/p/original${item.backdrop_path} });
+          heroItems.push({ id, type, name, desc: item.overview, backdrop: `https://image.tmdb.org/t/p/original${item.backdrop_path}` });
         }
       });
     }
@@ -257,10 +264,10 @@
     function rotateHero() {
       if (heroItems.length === 0) return;
       const item = heroItems[heroIndex];
-      document.getElementById('hero').style.backgroundImage = url('${item.backdrop}');
+      document.getElementById('hero').style.backgroundImage = `url('${item.backdrop}')`;
       document.getElementById('hero-title').textContent = item.name;
       document.getElementById('hero-desc').textContent = item.desc || 'No description available.';
-      document.getElementById('hero-btn').onclick = () => window.location.href = player.html?type=${item.type}&id=${item.id};
+      document.getElementById('hero-btn').onclick = () => window.location.href = `player.html?type=${item.type}&id=${item.id}`;
       heroIndex = (heroIndex + 1) % heroItems.length;
       setTimeout(rotateHero, 5000);
     }
@@ -285,17 +292,17 @@
         card.className = 'card';
         card.onclick = () => {
           const link = entry.type === 'movie'
-            ? player.html?id=${entry.id}&type=movie
-            : episode.html?tmbid=${entry.id}&type=tv&season=${entry.season}&episode=${entry.episode};
+            ? `player.html?id=${entry.id}&type=movie`
+            : `episode.html?tmbid=${entry.id}&type=tv&season=${entry.season}&episode=${entry.episode}`;
           window.location.href = link;
         };
         const subtitle = (entry.season && entry.episode)
-          ? Season ${entry.season}, Episode ${entry.episode}
+          ? `Season ${entry.season}, Episode ${entry.episode}`
           : '';
-        card.innerHTML = 
+        card.innerHTML = `
           <div class="continue-card">${entry.title}<br>${subtitle}</div>
           <div class="card-title">Continue</div>
-        ;
+        `;
         container.appendChild(card);
       });
     }
@@ -303,7 +310,7 @@
     function filterCategory(type) {
       usedIds.clear();
       for (let page = 1; page <= 5; page++) {
-        const endpoint = https://api.themoviedb.org/3/${type}/popular?api_key=${apiKey}&page=${page};
+        const endpoint = `https://api.themoviedb.org/3/${type}/popular?api_key=${apiKey}&page=${page}`;
         const containerId = type === 'movie' ? 'moviesContainer' : 'tvContainer';
         fetchCategory(endpoint, containerId, type, false, page === 1);
       }
@@ -312,11 +319,11 @@
     function searchTMDB() {
       const query = document.getElementById('searchInput').value.trim();
       if (!query) return;
-      window.location.href = search.html?query=${encodeURIComponent(query)};
+      window.location.href = `search.html?query=${encodeURIComponent(query)}`;
     }
 
-    fetchCategory(https://api.themoviedb.org/3/movie/now_playing?api_key=${apiKey}, 'moviesContainer', 'movie', true);
-    fetchCategory(https://api.themoviedb.org/3/tv/top_rated?api_key=${apiKey}, 'tvContainer', 'tv');
+    fetchCategory(`https://api.themoviedb.org/3/movie/now_playing?api_key=${apiKey}`, 'moviesContainer', 'movie', true);
+    fetchCategory(`https://api.themoviedb.org/3/tv/top_rated?api_key=${apiKey}`, 'tvContainer', 'tv');
     setTimeout(rotateHero, 1000);
     loadContinueWatching();
   </script>

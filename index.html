@@ -17,30 +17,15 @@ body {
   color: #fff;
   overflow-x: hidden;
 }
-header {
-  height: 80vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  padding: 20px;
-  background-size: cover;
-  background-position: center;
-  position: relative;
-}
-header::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(to top, rgba(20,20,20,1), rgba(20,20,20,0.3));
-  z-index: 0;
-}
+
+/* ========== DESKTOP ========== */
 nav {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  position: relative;
   z-index: 1;
   flex-wrap: wrap;
+  padding: 10px 20px;
 }
 .logo {
   font-size: 2rem;
@@ -50,7 +35,6 @@ nav {
 .nav-links {
   display: flex;
   align-items: center;
-  flex-wrap: wrap;
 }
 .nav-links a {
   margin-left: 20px;
@@ -68,6 +52,23 @@ nav {
   font-size: 1rem;
   background-color: #333;
   color: white;
+}
+header {
+  height: 80vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 20px;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+}
+header::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(20,20,20,1), rgba(20,20,20,0.3));
+  z-index: 0;
 }
 .hero-text {
   max-width: 600px;
@@ -92,6 +93,7 @@ nav {
   border-radius: 4px;
   cursor: pointer;
 }
+
 section {
   padding: 20px;
 }
@@ -177,49 +179,92 @@ h2 {
   text-align: center;
 }
 
+/* ========== MOBILE ========== */
 @media (max-width: 768px) {
   nav {
     flex-direction: column;
     align-items: flex-start;
-    gap: 10px;
+    padding: 15px;
+  }
+
+  .logo {
+    font-size: 1.8rem;
+    margin-bottom: 10px;
   }
 
   .nav-links {
     flex-direction: column;
     align-items: flex-start;
     width: 100%;
+    gap: 10px;
   }
 
   .nav-links a,
   .nav-links input {
     margin-left: 0;
-    margin-bottom: 10px;
+    width: 100%;
+  }
+
+  .nav-links input {
+    padding: 10px;
+    font-size: 1rem;
+    background-color: #222;
+    border: 1px solid #444;
+  }
+
+  header {
+    height: auto;
+    padding: 30px 15px;
+    justify-content: flex-end;
+    background-position: center;
+  }
+
+  .hero-text {
     width: 100%;
   }
 
   .hero-text h1 {
     font-size: 2rem;
+    line-height: 2.4rem;
   }
 
   .hero-text p {
     font-size: 1rem;
   }
 
+  .hero-text button {
+    width: 100%;
+    padding: 12px;
+    font-size: 1.1rem;
+  }
+
+  h2 {
+    font-size: 1.3rem;
+  }
+
   .carousel-wrapper {
-    padding: 0 5px;
+    overflow-x: hidden;
+  }
+
+  .carousel {
+    flex-direction: column;
+    overflow-x: hidden;
+    overflow-y: visible;
+    gap: 16px;
+  }
+
+  .card {
+    width: 100%;
+    height: 180px;
+    min-width: unset;
   }
 
   .scroll-arrow {
     display: none;
   }
 
-  .card {
-    min-width: 140px;
-    height: 220px;
-  }
-
   .card-title {
-    font-size: 0.8rem;
+    font-size: 0.85rem;
   }
 }
 

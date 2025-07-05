@@ -7,19 +7,13 @@
   <title>BrokieFlix</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: 'Inter', sans-serif;
       background-color: #000;
       color: #fff;
       overflow-x: hidden;
     }
-
     header {
       height: 70vh;
       position: relative;
@@ -30,8 +24,8 @@
       justify-content: flex-end;
       padding: 20px;
       transition: background-image 1s ease-in-out;
+      animation: fadeInSlide 1.5s ease-in-out;
     }
-
     header::after {
       content: '';
       position: absolute;
@@ -39,7 +33,6 @@
       background: linear-gradient(to top, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0));
       z-index: 0;
     }
-
     nav {
       position: fixed;
       top: 0;
@@ -51,28 +44,30 @@
       align-items: center;
       padding: 12px 20px;
       z-index: 10;
+      animation: slideDown 0.6s ease-in-out;
     }
-
     .logo {
       font-size: 1.6rem;
       font-weight: 900;
       color: #e50914;
     }
-
     .nav-links {
       display: flex;
       gap: 16px;
       align-items: center;
       flex-wrap: wrap;
     }
-
     .nav-links a {
       color: white;
       font-size: 0.95rem;
       text-decoration: none;
       font-weight: 500;
+      transition: transform 0.3s ease, color 0.3s ease;
     }
-
+    .nav-links a:hover {
+      color: #e50914;
+      transform: scale(1.05);
+    }
     .nav-links input {
       padding: 6px 12px;
       border-radius: 20px;
@@ -81,24 +76,20 @@
       color: white;
       font-size: 0.9rem;
     }
-
     .hero-text {
       position: relative;
       z-index: 1;
       max-width: 600px;
       animation: fadeIn 1s ease-in-out;
     }
-
     .hero-text h1 {
       font-size: 2.4rem;
       margin-bottom: 0.5rem;
     }
-
     .hero-text p {
       font-size: 1rem;
       color: #ccc;
     }
-
     .hero-text button {
       margin-top: 1rem;
       background: #e50914;
@@ -108,17 +99,20 @@
       font-size: 1rem;
       border-radius: 4px;
       cursor: pointer;
+      transition: transform 0.2s ease, background 0.2s ease;
     }
-
+    .hero-text button:hover {
+      transform: scale(1.05);
+      background: #ff0a16;
+    }
     section {
       padding: 0 20px 20px;
+      animation: fadeIn 0.6s ease-in-out;
     }
-
     h2 {
       font-size: 1.4rem;
       margin: 20px 0 10px;
     }
-
     .carousel {
       display: grid;
       grid-auto-flow: column;
@@ -130,20 +124,21 @@
       scrollbar-width: none;
       padding-bottom: 10px;
     }
-
     .carousel::-webkit-scrollbar {
       display: none;
     }
-
     .card {
       background: #111;
       border-radius: 6px;
       overflow: hidden;
       scroll-snap-align: start;
       position: relative;
-      transition: transform 0.2s ease;
+      transition: transform 0.3s ease;
+      animation: fadeUp 0.5s ease-in-out;
     }
-
+    .card:hover {
+      transform: scale(1.07);
+    }
     .card img {
       width: 100%;
       height: auto;
@@ -151,7 +146,6 @@
       object-fit: cover;
       aspect-ratio: 2 / 3;
     }
-
     .card-title {
       position: absolute;
       bottom: 0;
@@ -161,12 +155,22 @@
       font-size: 0.9rem;
       text-align: center;
     }
-
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(20px); }
       to { opacity: 1; transform: translateY(0); }
     }
-
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(40px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeInSlide {
+      from { opacity: 0; background-position: 50% 80%; }
+      to { opacity: 1; background-position: center; }
+    }
     @media (min-width: 768px) {
       .carousel {
         grid-auto-columns: 200px;
@@ -199,17 +203,14 @@
       <button id="hero-btn">Watch Now</button>
     </div>
   </header>
-
   <section>
     <h2>Trending Now</h2>
     <div class="carousel" id="moviesContainer"></div>
   </section>
-
   <section>
     <h2>Top Rated TV</h2>
     <div class="carousel" id="tvContainer"></div>
   </section>
-
   <section>
     <h2>Continue Watching</h2>
     <div class="carousel" id="continueContainer"></div>
@@ -255,7 +256,7 @@
       setTimeout(rotateHero, 6000);
     }
 
-    function loadContinueWatching() {
+    async function loadContinueWatching() {
       const container = document.getElementById('continueContainer');
       container.innerHTML = '';
       const items = [];
@@ -263,26 +264,30 @@
         if (key.startsWith('continue-')) {
           try {
             const entry = JSON.parse(localStorage.getItem(key));
-            if (entry?.id && entry?.title) {
+            if (entry?.id && entry?.title && entry?.type) {
               items.push(entry);
             }
           } catch (e) {}
         }
       }
       items.sort((a, b) => b.timestamp - a.timestamp);
-      items.forEach(entry => {
-        const card = document.createElement('div');
-        card.className = 'card';
-        const imgUrl = `https://image.tmdb.org/t/p/w500${entry.poster_path || ''}`;
-        card.onclick = () => {
-          const link = entry.type === 'movie'
-            ? `player.html?id=${entry.id}&type=movie`
-            : `episode.html?tmbid=${entry.id}&type=tv&season=${entry.season}&episode=${entry.episode}`;
-          window.location.href = link;
-        };
-        card.innerHTML = `<img src='${imgUrl}' alt='${entry.title}' /><div class='card-title'>${entry.title}</div>`;
-        container.appendChild(card);
-      });
+      for (const entry of items) {
+        try {
+          const res = await fetch(`https://api.themoviedb.org/3/${entry.type}/${entry.id}?api_key=${apiKey}`);
+          const data = await res.json();
+          const imgUrl = `https://image.tmdb.org/t/p/w500${data.poster_path}`;
+          const card = document.createElement('div');
+          card.className = 'card';
+          card.onclick = () => {
+            const link = entry.type === 'movie'
+              ? `player.html?id=${entry.id}&type=movie`
+              : `episode.html?tmbid=${entry.id}&type=tv&season=${entry.season}&episode=${entry.episode}`;
+            window.location.href = link;
+          };
+          card.innerHTML = `<img src='${imgUrl}' alt='${entry.title}' /><div class='card-title'>${entry.title}</div>`;
+          container.appendChild(card);
+        } catch (e) { console.error('TMDB fetch error', e); }
+      }
     }
 
     function filterCategory(type) {

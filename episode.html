@@ -27,8 +27,6 @@
       font-size: 2.5rem;
       margin-bottom: 20px;
     }
-
-    /* === BUTTON BASE STYLE === */
     button, a {
       background: rgba(30, 136, 229, 0.15);
       color: white;
@@ -42,12 +40,10 @@
       backdrop-filter: blur(8px);
       -webkit-backdrop-filter: blur(8px);
     }
-
     button:hover, a:hover {
       background-color: rgba(30, 136, 229, 0.25);
       transform: scale(1.03);
     }
-
     .button-group {
       display: flex;
       flex-wrap: wrap;
@@ -55,7 +51,6 @@
       gap: 12px;
       margin-bottom: 25px;
     }
-
     #player iframe {
       width: 100%;
       height: 500px;
@@ -64,27 +59,22 @@
       box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
       margin-bottom: 25px;
     }
-
     .back-btn {
       position: absolute;
       top: 20px;
       left: 20px;
       z-index: 2;
     }
-
     .back-btn button {
       padding: 10px 18px;
       font-size: 1rem;
       border-radius: 10px;
       background: rgba(255, 255, 255, 0.1);
     }
-
-    /* === SOURCE DROPDOWN === */
     .source-dropdown {
       position: relative;
       margin-bottom: 25px;
     }
-
     .dropdown-btn {
       background: rgba(255, 255, 255, 0.05);
       color: white;
@@ -96,12 +86,10 @@
       transition: background 0.2s ease, transform 0.2s ease;
       backdrop-filter: blur(8px);
     }
-
     .dropdown-btn:hover {
       background: rgba(255, 255, 255, 0.1);
       transform: scale(1.02);
     }
-
     .dropdown-list {
       display: none;
       position: absolute;
@@ -115,7 +103,6 @@
       z-index: 10;
       overflow: hidden;
     }
-
     .dropdown-list button {
       width: 100%;
       background: none;
@@ -126,47 +113,39 @@
       cursor: pointer;
       transition: background 0.2s ease;
     }
-
     .dropdown-list button:hover {
       background-color: rgba(255,255,255,0.05);
     }
-
     .dropdown-list button.active {
       font-weight: bold;
       background-color: rgba(255,255,255,0.08);
     }
-
     @media (max-width: 768px) {
       h1 { font-size: 2rem; }
       #player iframe { height: 300px; }
       button, a { padding: 10px 16px; font-size: 0.95rem; }
     }
-
     @media (max-width: 480px) {
       h1 { font-size: 1.6rem; }
       #player iframe { height: 220px; }
     }
   </style>
 </head>
-
 <body>
   <div class="container">
-    <h1>Now Playing</h1>
+    <h1 id="nowPlayingTitle">Now Playing</h1>
     <div class="back-btn">
       <button onclick="history.back()">⬅ Back</button>
     </div>
-
     <div class="source-dropdown">
       <button class="dropdown-btn" onclick="toggleDropdown()">🎬 Source ⌄</button>
       <div id="sourceList" class="dropdown-list"></div>
     </div>
-
     <div class="button-group">
       <button id="next-ep" style="display: none;" onclick="goToNextEpisode()">▶ Next Episode</button>
       <a id="downloadBtn" style="display: none;" target="_blank">⬇ Download</a>
       <a href="index.html">🏠 Home</a>
     </div>
-
     <div id="player"></div>
   </div>
 
@@ -176,32 +155,32 @@
     const type = q.get('type');
     let season = parseInt(q.get('season'));
     let episode = parseInt(q.get('episode'));
-    let currentSource = 'vidlink';
+    let currentSource = 'vidfast';
     const apiKey = '71ff6bb5a8e8de46c14f778b39dba9e9';
 
-    const sources = ['vidlink', 'vidzee', 'vidjoy', '2embed', 'embedsu', 'vidfast', 'videasy', 'vidsrc'];
+    const sources = ['vidfast', 'vidlink', 'vidzee', 'vidjoy', '2embed', 'embedsu', 'videasy', 'vidsrc'];
 
     function getEmbedUrl(source) {
       if (!id || !type) return null;
       if (type === 'movie') {
         switch (source) {
+          case 'vidfast': return `https://vidfast.pro/movie/${id}`;
           case 'vidlink': return `https://vidlink.pro/movie/${id}`;
           case 'vidzee': return `https://player.vidzee.wtf/embed/movie/${id}`;
           case 'vidjoy': return `https://vidjoy.pro/embed/movie/${id}`;
           case '2embed': return `https://www.2embed.cc/embed/${id}`;
           case 'embedsu': return `https://embed.su/embed/movie/${id}`;
-          case 'vidfast': return `https://vidfast.pro/movie/${id}?autoPlay=true`;
           case 'videasy': return `https://player.videasy.net/movie/${id}`;
           case 'vidsrc': return `https://vidsrc.xyz/embed/movie/${id}`;
         }
       } else if (type === 'tv' && season && episode) {
         switch (source) {
+          case 'vidfast': return `https://vidfast.pro/tv/${id}/${season}/${episode}`;
           case 'vidlink': return `https://vidlink.pro/tv/${id}/${season}/${episode}`;
           case 'vidzee': return `https://player.vidzee.wtf/embed/tv/${season}/${id}`;
           case 'vidjoy': return `https://vidjoy.pro/embed/tv/${season}/${id}`;
           case '2embed': return `https://www.2embed.cc/embedtv/${id}&s=${season}&e=${episode}`;
           case 'embedsu': return `https://embed.su/embed/tv/${id}/${season}/${episode}`;
-          case 'vidfast': return `https://vidfast.pro/tv/${id}/${season}/${episode}?autoPlay=true`;
           case 'videasy': return `https://player.videasy.net/tv/${id}/${season}/${episode}`;
           case 'vidsrc': return `https://vidsrc.xyz/embed/tv/${id}/${season}/${episode}`;
         }
@@ -241,7 +220,6 @@
     async function setDownloadButton() {
       const btn = document.getElementById('downloadBtn');
       let url = "";
-
       if (type === 'movie') {
         url = `https://dl.vidzee.wtf/download/movie/v1/${id}`;
       } else if (type === 'tv' && season && episode) {
@@ -250,7 +228,6 @@
         btn.style.display = 'none';
         return;
       }
-
       try {
         const res = await fetch(url);
         const data = await res.json();
@@ -273,11 +250,11 @@
       if (type === 'tv') document.getElementById('next-ep').style.display = 'inline-block';
       setDownloadButton();
       renderSourceList();
-
       try {
         const res = await fetch(`https://api.themoviedb.org/3/${type}/${id}?api_key=${apiKey}`);
         const data = await res.json();
         const title = data.title || data.name || 'Unknown Title';
+        document.getElementById('nowPlayingTitle').textContent = `${title}`;
         localStorage.setItem(`continue-${id}`, JSON.stringify({
           id, type, season, episode, title, timestamp: Date.now()
         }));

@@ -160,11 +160,11 @@
 
     const sources = ['vidfast', 'vidlink', 'vidzee', 'vidjoy', '2embed', 'embedsu', 'videasy', 'vidsrc'];
 
-    function getEmbedUrl(source) {
+ function getEmbedUrl(source) {
       if (!id || !type) return null;
       if (type === 'movie') {
         switch (source) {
-          case 'vidfast': return `https://vidfast.pro/movie/${id}`;
+          case 'vidfast': return `https://vidfast.pro/movie/${id}?autoPlay=true`;
           case 'vidlink': return `https://vidlink.pro/movie/${id}`;
           case 'vidzee': return `https://player.vidzee.wtf/embed/movie/${id}`;
           case 'vidjoy': return `https://vidjoy.pro/embed/movie/${id}`;
@@ -175,7 +175,7 @@
         }
       } else if (type === 'tv' && season && episode) {
         switch (source) {
-          case 'vidfast': return `https://vidfast.pro/tv/${id}/${season}/${episode}`;
+          case 'vidfast': return `https://vidfast.pro/tv/${id}/${season}/${episode}?autoPlay=true`;
           case 'vidlink': return `https://vidlink.pro/tv/${id}/${season}/${episode}`;
           case 'vidzee': return `https://player.vidzee.wtf/embed/tv/${season}/${id}`;
           case 'vidjoy': return `https://vidjoy.pro/embed/tv/${season}/${id}`;
@@ -187,7 +187,6 @@
       }
       return null;
     }
-
     function renderSourceList() {
       const list = document.getElementById('sourceList');
       list.innerHTML = '';

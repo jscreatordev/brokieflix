@@ -120,6 +120,22 @@
       font-weight: bold;
       background-color: rgba(255,255,255,0.08);
     }
+    .episode-picker {
+      display: none;
+      margin-bottom: 25px;
+    }
+    .episode-picker select {
+      padding: 8px 16px;
+      font-size: 0.95rem;
+      border-radius: 8px;
+      background-color: #1c1c1c;
+      color: white;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .episode-picker label {
+      margin-right: 8px;
+      font-weight: 500;
+    }
     @media (max-width: 768px) {
       h1 { font-size: 2rem; }
       #player iframe { height: 300px; }
@@ -141,12 +157,18 @@
       <button class="dropdown-btn" onclick="toggleDropdown()">🎬 Source ⌄</button>
       <div id="sourceList" class="dropdown-list"></div>
     </div>
+    <div id="player"></div>
+    <div class="episode-picker" id="episodePicker">
+      <label for="episodeSelect">📺 Choose Episode:</label>
+      <select id="episodeSelect" onchange="goToSelectedEpisode()">
+        <option>Loading...</option>
+      </select>
+    </div>
     <div class="button-group">
       <button id="next-ep" style="display: none;" onclick="goToNextEpisode()">▶ Next Episode</button>
       <a id="downloadBtn" style="display: none;" target="_blank">⬇ Download</a>
       <a href="index.html">🏠 Home</a>
     </div>
-    <div id="player"></div>
   </div>
 
   <script>
@@ -159,6 +181,7 @@
     const apiKey = '71ff6bb5a8e8de46c14f778b39dba9e9';
 
     const sources = ['vidfast', 'vidlink', 'vidzee', 'vidjoy', '2embed', 'embedsu', 'videasy', 'vidsrc'];
+    let episodeCount = 0;
 
     function getEmbedUrl(source) {
       if (!id || !type) return null;
@@ -218,6 +241,45 @@
       if (!e.target.closest('.source-dropdown')) closeDropdown();
     });
 
+    async function goToNextEpisode() {
+      if (episode >= episodeCount) {
+        const url = new URL(window.location.href);
+        url.searchParams.set('season', season + 1);
+        url.searchParams.set('episode', 1);
+        window.location.href = url.toString();
+      } else {
+        const nextEp = episode + 1;
+        const url = new URL(window.location.href);
+        url.searchParams.set('episode', nextEp);
+        window.location.href = url.toString();
+      }
+    }
+
+    function goToSelectedEpisode() {
+      const selectedEp = document.getElementById('episodeSelect').value;
+      const url = new URL(window.location.href);
+      url.searchParams.set('episode', selectedEp);
+      window.location.href = url.toString();
+    }
+
+    async function populateEpisodeDropdown() {
+      if (type !== 'tv' || !season) return;
+      const picker = document.getElementById('episodePicker');
+      picker.style.display = 'block';
+      const res = await fetch(`https://api.themoviedb.org/3/tv/${id}/season/${season}?api_key=${apiKey}`);
+      const data = await res.json();
+      const select = document.getElementById('episodeSelect');
+      select.innerHTML = '';
+      episodeCount = data.episodes.length;
+      data.episodes.forEach(ep => {
+        const opt = document.createElement('option');
+        opt.value = ep.episode_number;
+        opt.textContent = `Episode ${ep.episode_number}: ${ep.name}`;
+        if (ep.episode_number === episode) opt.selected = true;
+        select.appendChild(opt);
+      });
+    }
+
     async function setDownloadButton() {
       const btn = document.getElementById('downloadBtn');
       let url = "";
@@ -249,6 +311,7 @@
         ? `<iframe src="${embedUrl}" allowfullscreen></iframe>`
         : 'Missing or incorrect parameters.';
       if (type === 'tv') document.getElementById('next-ep').style.display = 'inline-block';
+      if (type === 'tv') populateEpisodeDropdown();
       setDownloadButton();
       renderSourceList();
       try {
@@ -260,13 +323,6 @@
           id, type, season, episode, title, timestamp: Date.now()
         }));
       } catch {}
-    }
-
-    function goToNextEpisode() {
-      const nextEp = episode + 1;
-      const url = new URL(window.location.href);
-      url.searchParams.set('episode', nextEp);
-      window.location.href = url.toString();
     }
 
     loadPlayer();

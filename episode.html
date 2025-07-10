@@ -155,12 +155,12 @@
     const type = q.get('type');
     let season = parseInt(q.get('season'));
     let episode = parseInt(q.get('episode'));
-    let currentSource = 'vidfast';
+    let currentSource = localStorage.getItem(`source-${id}`) || 'vidfast';
     const apiKey = '71ff6bb5a8e8de46c14f778b39dba9e9';
 
     const sources = ['vidfast', 'vidlink', 'vidzee', 'vidjoy', '2embed', 'embedsu', 'videasy', 'vidsrc'];
 
- function getEmbedUrl(source) {
+    function getEmbedUrl(source) {
       if (!id || !type) return null;
       if (type === 'movie') {
         switch (source) {
@@ -187,6 +187,7 @@
       }
       return null;
     }
+
     function renderSourceList() {
       const list = document.getElementById('sourceList');
       list.innerHTML = '';
@@ -196,6 +197,7 @@
         if (src === currentSource) btn.classList.add('active');
         btn.onclick = () => {
           currentSource = src;
+          localStorage.setItem(`source-${id}`, src);
           closeDropdown();
           loadPlayer();
         };

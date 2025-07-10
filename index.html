@@ -10,27 +10,28 @@
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: 'Inter', sans-serif;
-      background-color: #000;
+      background-color: #141414;
       color: #fff;
       overflow-x: hidden;
     }
     header {
-      height: 70vh;
+      height: 65vh;
       position: relative;
       background-size: cover;
       background-position: center;
       display: flex;
       flex-direction: column;
       justify-content: flex-end;
-      padding: 20px;
+      padding: 0 0 40px 40px;
       transition: background-image 1s ease-in-out;
       animation: fadeInSlide 1.5s ease-in-out;
+      min-height: 320px;
     }
     header::after {
       content: '';
       position: absolute;
       inset: 0;
-      background: linear-gradient(to top, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0));
+      background: linear-gradient(to top, rgba(20,20,20,1) 0%, rgba(20,20,20,0.7) 40%, rgba(20,20,20,0.2) 100%);
       z-index: 0;
     }
     nav {
@@ -38,18 +39,24 @@
       top: 0;
       left: 0;
       width: 100%;
-      background: rgba(0, 0, 0, 0.8);
+      background: linear-gradient(to bottom, rgba(20,20,20,0.95) 80%, rgba(20,20,20,0));
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 12px 20px;
+      padding: 0 32px;
+      height: 54px;
       z-index: 10;
       animation: slideDown 0.6s ease-in-out;
+      border-bottom: 1px solid rgba(255,255,255,0.03);
     }
     .logo {
-      font-size: 1.6rem;
+      font-size: 1.5rem;
       font-weight: 900;
       color: #e50914;
+      letter-spacing: 2px;
+      text-shadow: 0 2px 12px #000;
+      font-family: 'Inter', 'Arial Black', sans-serif;
+      cursor: pointer;
     }
     .nav-links {
       display: flex;
@@ -58,102 +65,226 @@
       flex-wrap: wrap;
     }
     .nav-links a {
-      color: white;
+      color: #fff;
       font-size: 0.95rem;
       text-decoration: none;
       font-weight: 500;
-      transition: transform 0.3s ease, color 0.3s ease;
+      transition: color 0.2s;
+      padding: 4px 0;
+      position: relative;
+      cursor: pointer;
+    }
+    .nav-links a::after {
+      content: '';
+      display: block;
+      width: 0;
+      height: 2px;
+      background: #e50914;
+      transition: width 0.2s;
+      position: absolute;
+      left: 0;
+      bottom: -2px;
     }
     .nav-links a:hover {
       color: #e50914;
-      transform: scale(1.05);
+    }
+    .nav-links a:hover::after {
+      width: 100%;
     }
     .nav-links input {
-      padding: 6px 12px;
+      padding: 5px 12px;
       border-radius: 20px;
       border: none;
-      background: #333;
+      background: #222;
       color: white;
-      font-size: 0.9rem;
+      font-size: 0.95rem;
+      margin-left: 8px;
+      outline: none;
+      transition: background 0.2s;
+    }
+    .nav-links input:focus {
+      background: #333;
     }
     .hero-text {
       position: relative;
       z-index: 1;
-      max-width: 600px;
+      max-width: 420px;
       animation: fadeIn 1s ease-in-out;
+      margin-bottom: 24px;
     }
     .hero-text h1 {
-      font-size: 2.4rem;
-      margin-bottom: 0.5rem;
+      font-size: 2.1rem;
+      margin-bottom: 0.7rem;
+      font-weight: 900;
+      text-shadow: 0 2px 24px #000, 0 1px 2px #000;
+      letter-spacing: 1px;
     }
     .hero-text p {
       font-size: 1rem;
-      color: #ccc;
+      color: #fff;
+      text-shadow: 0 2px 12px #000;
+      margin-bottom: 1rem;
+      max-width: 90%;
+      line-height: 1.4;
     }
-    .hero-text button {
-      margin-top: 1rem;
-      background: #e50914;
+    .hero-btns {
+      display: flex;
+      gap: 12px;
+    }
+    .hero-text button, .hero-btns button {
+      background: #fff;
       border: none;
-      color: white;
-      padding: 10px 20px;
-      font-size: 1rem;
+      color: #141414;
+      padding: 8px 22px;
+      font-size: 0.95rem;
+      font-weight: 700;
       border-radius: 4px;
       cursor: pointer;
-      transition: transform 0.2s ease, background 0.2s ease;
+      transition: background 0.2s, color 0.2s, transform 0.2s;
+      box-shadow: 0 2px 8px #0005;
+      margin-right: 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
-    .hero-text button:hover {
-      transform: scale(1.05);
-      background: #ff0a16;
+    .hero-text button.play, .hero-btns button.play {
+      background: #fff;
+      color: #141414;
+    }
+    .hero-text button.info, .hero-btns button.info {
+      background: rgba(109,109,110,0.7);
+      color: #fff;
+    }
+    .hero-text button:hover, .hero-btns button:hover {
+      background: #e50914;
+      color: #fff;
+      transform: scale(1.04);
     }
     section {
-      padding: 0 20px 20px;
+      padding: 0 40px 30px;
       animation: fadeIn 0.6s ease-in-out;
+      margin-top: 0;
     }
     h2 {
-      font-size: 1.4rem;
-      margin: 20px 0 10px;
+      font-size: 1.5rem;
+      margin: 32px 0 14px;
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+    .carousel-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
     }
     .carousel {
       display: grid;
       grid-auto-flow: column;
-      grid-auto-columns: 160px;
-      gap: 10px;
+      grid-auto-columns: 240px;
+      gap: 24px;
       overflow-x: auto;
       scroll-snap-type: x mandatory;
       -ms-overflow-style: none;
       scrollbar-width: none;
       padding-bottom: 10px;
+      transition: grid-auto-columns 0.2s;
     }
     .carousel::-webkit-scrollbar {
       display: none;
     }
+    .carousel-arrow {
+      background: rgba(20,20,20,0.7);
+      border: none;
+      color: #fff;
+      font-size: 2.5rem;
+      width: 48px;
+      height: 100%;
+      min-height: 180px;
+      cursor: pointer;
+      position: absolute;
+      top: 0;
+      z-index: 3;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+      border-radius: 6px;
+      opacity: 0.8;
+      outline: none;
+      user-select: none;
+    }
+    .carousel-arrow.left {
+      left: -16px;
+    }
+    .carousel-arrow.right {
+      right: -16px;
+    }
+    .carousel-arrow:hover {
+      background: #e50914;
+      color: #fff;
+      opacity: 1;
+    }
     .card {
-      background: #111;
+      background: #222;
       border-radius: 6px;
       overflow: hidden;
       scroll-snap-align: start;
       position: relative;
-      transition: transform 0.3s ease;
+      transition: transform 0.3s cubic-bezier(.21,.6,.36,1);
       animation: fadeUp 0.5s ease-in-out;
+      box-shadow: 0 2px 12px #0008;
+      cursor: pointer;
+      min-height: 340px;
+      width: 100%;
     }
     .card:hover {
-      transform: scale(1.07);
+      transform: scale(1.13) translateY(-10px);
+      z-index: 2;
+      box-shadow: 0 8px 32px #000c;
     }
     .card img {
       width: 100%;
-      height: auto;
+      height: 340px;
       display: block;
       object-fit: cover;
       aspect-ratio: 2 / 3;
+      border-bottom: 2px solid #e50914;
     }
     .card-title {
       position: absolute;
       bottom: 0;
-      background: rgba(0, 0, 0, 0.6);
+      background: linear-gradient(to top, rgba(20,20,20,0.95) 80%, rgba(20,20,20,0));
       width: 100%;
-      padding: 6px;
-      font-size: 0.9rem;
-      text-align: center;
+      padding: 10px 8px 8px;
+      font-size: 1.15rem;
+      text-align: left;
+      color: #fff;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-shadow: 0 2px 8px #000;
+    }
+    .remove-btn {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      background: rgba(229,9,20,0.85);
+      color: #fff;
+      border: none;
+      border-radius: 50%;
+      width: 28px;
+      height: 28px;
+      font-size: 1.2rem;
+      cursor: pointer;
+      z-index: 5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0.85;
+      transition: background 0.2s, opacity 0.2s;
+    }
+    .remove-btn:hover {
+      background: #fff;
+      color: #e50914;
+      opacity: 1;
     }
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(20px); }
@@ -171,15 +302,79 @@
       from { opacity: 0; background-position: 50% 80%; }
       to { opacity: 1; background-position: center; }
     }
-    @media (min-width: 768px) {
+    @media (max-width: 1200px) {
       .carousel {
-        grid-auto-columns: 200px;
+        grid-auto-columns: 180px;
+        gap: 16px;
+      }
+      .card img {
+        height: 240px;
+      }
+      .card {
+        min-height: 240px;
+      }
+    }
+    @media (max-width: 900px) {
+      header {
+        padding: 0 0 40px 20px;
+        min-height: 350px;
+      }
+      section {
+        padding: 0 16px 24px;
+      }
+      .carousel {
+        grid-auto-columns: 140px;
+        gap: 10px;
+      }
+      .card img {
+        height: 200px;
+      }
+      .card {
+        min-height: 200px;
+      }
+    }
+    @media (max-width: 600px) {
+      nav {
+        padding: 0 10px;
+        height: 54px;
+      }
+      .logo {
+        font-size: 1.3rem;
+      }
+      .nav-links {
+        gap: 10px;
+      }
+      .nav-links input {
+        font-size: 0.9rem;
+        padding: 5px 10px;
+      }
+      header {
+        padding: 0 0 20px 10px;
+        min-height: 220px;
+        height: 50vh;
       }
       .hero-text h1 {
-        font-size: 3rem;
+        font-size: 1.5rem;
       }
       .hero-text p {
+        font-size: 0.9rem;
+      }
+      .carousel {
+        grid-auto-columns: 110px;
+      }
+      .card img {
+        height: 140px;
+      }
+      .card {
+        min-height: 140px;
+      }
+      h2 {
         font-size: 1.1rem;
+        margin: 18px 0 8px;
+      }
+      .carousel-arrow {
+        font-size: 1.7rem;
+        width: 32px;
       }
     }
   </style>
@@ -188,11 +383,9 @@
 <body>
   <header id="hero">
     <nav>
-      <div class="logo">BrokieFlix</div>
+      <div class="logo" onclick="location.reload()">BrokieFlix</div>
       <div class="nav-links">
         <a onclick="location.reload()">Home</a>
-        <a onclick="filterCategory('tv')">TV Shows</a>
-        <a onclick="filterCategory('movie')">Movies</a>
         <a onclick="loadContinueWatching()">My List</a>
         <input type="text" id="searchInput" placeholder="Search..." onkeypress="if(event.key==='Enter') searchTMDB()" />
       </div>
@@ -200,20 +393,35 @@
     <div class="hero-text">
       <h1 id="hero-title">Loading...</h1>
       <p id="hero-desc">Please wait while we fetch the latest releases.</p>
-      <button id="hero-btn">Watch Now</button>
+      <div class="hero-btns">
+        <button class="play" id="hero-btn"><svg width="22" height="22" fill="currentColor" style="vertical-align:middle" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>Play</button>
+        <button class="info" id="hero-info-btn"><svg width="22" height="22" fill="currentColor" style="vertical-align:middle" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v2h-2zm2 10h-2v-6h2v6z"/></svg>More Info</button>
+      </div>
     </div>
   </header>
   <section>
     <h2>Trending Now</h2>
-    <div class="carousel" id="moviesContainer"></div>
+    <div class="carousel-wrapper">
+      <button class="carousel-arrow left" aria-label="Scroll left" onclick="scrollCarousel('moviesContainer', -1)">&lt;</button>
+      <div class="carousel" id="moviesContainer"></div>
+      <button class="carousel-arrow right" aria-label="Scroll right" onclick="scrollCarousel('moviesContainer', 1)">&gt;</button>
+    </div>
   </section>
   <section>
     <h2>Top Rated TV</h2>
-    <div class="carousel" id="tvContainer"></div>
+    <div class="carousel-wrapper">
+      <button class="carousel-arrow left" aria-label="Scroll left" onclick="scrollCarousel('tvContainer', -1)">&lt;</button>
+      <div class="carousel" id="tvContainer"></div>
+      <button class="carousel-arrow right" aria-label="Scroll right" onclick="scrollCarousel('tvContainer', 1)">&gt;</button>
+    </div>
   </section>
   <section>
     <h2>Continue Watching</h2>
-    <div class="carousel" id="continueContainer"></div>
+    <div class="carousel-wrapper">
+      <button class="carousel-arrow left" aria-label="Scroll left" onclick="scrollCarousel('continueContainer', -1)">&lt;</button>
+      <div class="carousel" id="continueContainer"></div>
+      <button class="carousel-arrow right" aria-label="Scroll right" onclick="scrollCarousel('continueContainer', 1)">&gt;</button>
+    </div>
   </section>
 
   <script>
@@ -221,6 +429,14 @@
     let heroIndex = 0;
     let heroItems = [];
     const usedIds = new Set();
+
+    function scrollCarousel(containerId, dir) {
+      const carousel = document.getElementById(containerId);
+      if (!carousel) return;
+      const card = carousel.querySelector('.card');
+      const scrollAmount = card ? card.offsetWidth + 24 : 240;
+      carousel.scrollBy({ left: dir * scrollAmount * 2, behavior: 'smooth' });
+    }
 
     async function fetchCategory(endpoint, containerId, typeOverride, isHero = false, clear = false) {
       const res = await fetch(endpoint);
@@ -252,6 +468,7 @@
       document.getElementById('hero-title').textContent = item.name;
       document.getElementById('hero-desc').textContent = item.desc || 'No description available.';
       document.getElementById('hero-btn').onclick = () => window.location.href = `player.html?type=${item.type}&id=${item.id}`;
+      document.getElementById('hero-info-btn').onclick = () => window.location.href = `info.html?type=${item.type}&id=${item.id}`;
       heroIndex = (heroIndex + 1) % heroItems.length;
       setTimeout(rotateHero, 6000);
     }
@@ -265,7 +482,7 @@
           try {
             const entry = JSON.parse(localStorage.getItem(key));
             if (entry?.id && entry?.title && entry?.type) {
-              items.push(entry);
+              items.push({ ...entry, _key: key });
             }
           } catch (e) {}
         }
@@ -278,24 +495,27 @@
           const imgUrl = `https://image.tmdb.org/t/p/w500${data.poster_path}`;
           const card = document.createElement('div');
           card.className = 'card';
-          card.onclick = () => {
+          card.onclick = (e) => {
+            if (e.target.classList.contains('remove-btn')) return;
             const link = entry.type === 'movie'
               ? `player.html?id=${entry.id}&type=movie`
               : `episode.html?tmbid=${entry.id}&type=tv&season=${entry.season}&episode=${entry.episode}`;
             window.location.href = link;
           };
+          // Add remove "X" button
+          const removeBtn = document.createElement('button');
+          removeBtn.className = 'remove-btn';
+          removeBtn.title = 'Remove from Continue Watching';
+          removeBtn.innerHTML = '&times;';
+          removeBtn.onclick = (ev) => {
+            ev.stopPropagation();
+            localStorage.removeItem(entry._key);
+            card.remove();
+          };
           card.innerHTML = `<img src='${imgUrl}' alt='${entry.title}' /><div class='card-title'>${entry.title}</div>`;
+          card.appendChild(removeBtn);
           container.appendChild(card);
         } catch (e) { console.error('TMDB fetch error', e); }
-      }
-    }
-
-    function filterCategory(type) {
-      usedIds.clear();
-      for (let page = 1; page <= 3; page++) {
-        const endpoint = `https://api.themoviedb.org/3/${type}/popular?api_key=${apiKey}&page=${page}`;
-        const containerId = type === 'movie' ? 'moviesContainer' : 'tvContainer';
-        fetchCategory(endpoint, containerId, type, false, page === 1);
       }
     }
 

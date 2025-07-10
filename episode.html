@@ -3,7 +3,25 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Now Playing - BrokieFlix</title>
+  <title id="dynamicTitle">Watching</title>
+  <script>
+    // Set dynamic title after fetching the show/movie title
+    document.addEventListener('DOMContentLoaded', () => {
+      const q = new URLSearchParams(window.location.search);
+      const id = q.get('tmbid');
+      const type = q.get('type');
+      const apiKey = '71ff6bb5a8e8de46c14f778b39dba9e9';
+      if (!id || !type) return;
+      fetch(`https://api.themoviedb.org/3/${type}/${id}?api_key=${apiKey}`)
+        .then(res => res.json())
+        .then(data => {
+          const title = data.title || data.name || 'Unknown Title';
+          document.title = `Watching ${title}`;
+          const dynamicTitle = document.getElementById('dynamicTitle');
+          if (dynamicTitle) dynamicTitle.textContent = `Watching ${title}`;
+        });
+    });
+  </script>
   <link rel="icon" type="image/png" href="brokieflix.png">
 
   <style>
